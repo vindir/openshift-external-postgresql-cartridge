@@ -2,7 +2,7 @@
 
 Summary:       Provides postgresql support
 Name:          openshift-origin-cartridge-postgresql-0.1
-Version: 1.3.2
+Version: 1.3.3
 Release:       1%{?dist}
 Group:         Development/Languages
 License:       ASL 2.0
@@ -89,6 +89,9 @@ ln -s %{cartridgedir}/../abstract/info/bin/sync_gears.sh %{buildroot}%{cartridge
 
 
 %changelog
+* Wed Jan 09 2013 Jamey Owens <jowens@mojolingo.com> 1.3.3-1
+- Initial Creation 
+
 * Wed Jan 09 2013 Unknown name 1.3.2-1
 - new package built with tito
 - initial creation
