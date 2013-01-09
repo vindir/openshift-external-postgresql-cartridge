@@ -28,6 +28,7 @@ done
 cartridge_type="postgresql-0.1"
 source "/etc/openshift/node.conf"
 source ${CARTRIDGE_BASE_PATH}/abstract/info/lib/util
+source "/etc/openshift/pgsql_cartridge.conf"
 
 setup_configure "$1" $2 $3 $4
 disable_cgroups
@@ -61,8 +62,8 @@ populate_repo_dir
 #
 dbname=${namespace}${application}
 dbpass=`date |md5sum`
-PGPASSWORD=$OPENSHIFT_POSTGRESQL_DB_PASSWORD createuser -S -D -R -l -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U $PGSQL_CARTRIDGE_USER $uuid
-cat <<EOF | PGPASSWORD=admin psql -a -h $OPENSHIFT_POSTGRESQL_DB_HOST -p $OPENSHIFT_POSTGRESQL_DB_PORT -U admin -d postgres -f - || error "Failed to set credentials or create database" 124
+PGPASSWORD=$PGSQL_CARTRIDGE_PASSWORD createuser -S -D -R -l -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U $PGSQL_CARTRIDGE_USER $uuid
+cat <<EOF | PGPASSWORD=$PGSQL_CARTRIDGE_PASSWORD psql -a -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U PGSQL_CARTRIDGE_USER -d postgres -f - || error "Failed to set credentials or create database" 124
 CREATE DATABASE "$dbname" OWNER "$uuid";
 ALTER USER $uuid PASSWORD '$dbpass';
 GRANT ALL PRIVILEGES ON DATABASE $dbname TO $uuid;
