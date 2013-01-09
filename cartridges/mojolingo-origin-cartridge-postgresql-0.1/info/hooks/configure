@@ -61,7 +61,7 @@ populate_repo_dir
 # Mojo Lingo Specific Additions to DIY
 #
 dbname=${namespace}${application}
-dbpass=`date |md5sum`
+dbpass=`echo "${namespace}${uuid}" |md5sum |cut -c 1-32`
 PGPASSWORD=$PGSQL_CARTRIDGE_PASSWORD createuser -S -D -R -l -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U $PGSQL_CARTRIDGE_USER $uuid
 cat <<EOF | PGPASSWORD=$PGSQL_CARTRIDGE_PASSWORD psql -a -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U PGSQL_CARTRIDGE_USER -d postgres -f - || error "Failed to set credentials or create database" 124
 CREATE DATABASE "$dbname" OWNER "$uuid";
