@@ -40,6 +40,11 @@ else
 
     stop_app
 
+    #
+    # Mojo Lingo Specific Additions to DIY
+    #
+    PGPASSWORD=$OPENSHIFT_POSTGRESQL_DB_PASSWORD dropuser -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U $PGSQL_CARTRIDGE_USER
+
     rm_cartridge_instance_dir "$cartridge_type"
     
     enable_cgroups

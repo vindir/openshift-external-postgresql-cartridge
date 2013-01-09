@@ -57,6 +57,18 @@ popd > /dev/null
 populate_repo_dir
 
 #
+# Mojo Lingo Specific Additions to DIY
+#
+dbname=${namespace}${application}
+dbpass=`date |md5sum`
+PGPASSWORD=$OPENSHIFT_POSTGRESQL_DB_PASSWORD createuser -S -D -R -l -h $PGSQL_CARTRIDGE_HOST -p $PGSQL_CARTRIDGE_PORT -U $PGSQL_CARTRIDGE_USER $uuid
+cat <<EOF | PGPASSWORD=admin psql -a -h $OPENSHIFT_POSTGRESQL_DB_HOST -p $OPENSHIFT_POSTGRESQL_DB_PORT -U admin -d postgres -f - || error "Failed to set credentials or create database" 124
+CREATE DATABASE "$dbname" OWNER "$uuid";
+ALTER USER $uuid PASSWORD '$dbpass';
+GRANT ALL PRIVILEGES ON DATABASE $dbname TO $uuid;
+EOF
+
+#
 # Find an open localhost IP
 #
 IP=`find_open_ip $uid $uuid`
