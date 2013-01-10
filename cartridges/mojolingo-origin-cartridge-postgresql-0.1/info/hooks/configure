@@ -30,6 +30,10 @@ source "/etc/openshift/node.conf"
 source ${CARTRIDGE_BASE_PATH}/abstract/info/lib/util
 source "/etc/openshift/pgsql_cartridge.conf"
 
+CART_INSTANCE_DIR=$(get_cartridge_instance_dir "$cartridge_type")
+CART_INFO_DIR=${CARTRIDGE_BASE_PATH}/embedded/$cartridge_type/info
+source ${CART_INFO_DIR}/lib/util
+
 setup_configure "$1" $2 $3 $4
 disable_cgroups
 
@@ -68,6 +72,12 @@ CREATE DATABASE "$dbname" OWNER "$uuid";
 ALTER USER $uuid PASSWORD '$dbpass';
 GRANT ALL PRIVILEGES ON DATABASE $dbname TO $uuid;
 EOF
+
+echo "export PGSQL_CARTRIDGE_HOST=$PGSQL_CARTRIDGE_HOST" > $APP_HOME/.env/PGSQL_CARTRIDGE_HOST
+echo "export PGSQL_CARTRIDGE_PORT=$PGSQL_CARTRIDGE_PORT" > $APP_HOME/.env/PGSQL_CARTRIDGE_PORT
+echo "export PGSQL_CARTRIDGE_USER=$PGSQL_CARTRIDGE_USER" > $APP_HOME/.env/PGSQL_CARTRIDGE_USER
+echo "export PGSQL_CARTRIDGE_PASSWORD=$PGSQL_CARTRIDGE_PASSWORD" > $APP_HOME/.env/PGSQL_CARTRIDGE_PASSWORD
+echo "export PGSQL_CARTRIDGE_CONNSTRING='postgresql://$uuid:$dbpass@$PGSQL_CARTRIDGE_HOST:$PGSQL_CARTRIDGE_PORT/'" > $APP_HOME/.env/PGSQL_CARTRIDGE_CONNSTRING
 
 #
 # Find an open localhost IP
